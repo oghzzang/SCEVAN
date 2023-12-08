@@ -591,6 +591,7 @@ plotTSNE <- function(raw_count_mtx, CNAmat , filt_genes, tum_cells, clustersSub,
       expr = {
         #Rtsne(t(as.matrix(CNAmat[,tum_cells])))
         Rtsne(t(as.matrix(CNAmat[,names(clustersSub)])))
+        saveRDS("input.RData") ## OJE
       },
       error = function(e){ 
         #Rtsne(t(as.matrix(CNAmat[,tum_cells])), perplexity = 15)
@@ -606,6 +607,7 @@ plotTSNE <- function(raw_count_mtx, CNAmat , filt_genes, tum_cells, clustersSub,
     df <- data.frame(x = tsne$Y[,1],
                      y = tsne$Y[,2],
                      Subclones = pred)
+    saveRDS(df, "tsne.RData") ## OJE
     png(paste("./output/",samp,"tsne_CNA.png",sep=""), height=1650, width=1650, res=200)
     
     pp <- ggplot(df, aes(x, y, colour = Subclones)) +
