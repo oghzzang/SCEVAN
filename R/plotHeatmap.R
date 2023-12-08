@@ -591,7 +591,7 @@ plotTSNE <- function(raw_count_mtx, CNAmat , filt_genes, tum_cells, clustersSub,
       expr = {
         #Rtsne(t(as.matrix(CNAmat[,tum_cells])))
         Rtsne(t(as.matrix(CNAmat[,names(clustersSub)])))
-        saveRDS("input.RData") ## OJE
+        
       },
       error = function(e){ 
         #Rtsne(t(as.matrix(CNAmat[,tum_cells])), perplexity = 15)
@@ -601,8 +601,11 @@ plotTSNE <- function(raw_count_mtx, CNAmat , filt_genes, tum_cells, clustersSub,
       }
     )
 
+    mtxplot <- t(as.matrix(CNAmat[,names(clustersSub)]))
+    saveRDS(mtxplot, paste("./output/",samp,".CNAmat1.RDS",sep=""))
+    
     umap_df <- umap::umap(mtxplot,n_components = 2, random_state = 15)
-    saveRDS(umap_df, "umap_df.Rds") ## OJE
+    saveRDS(umap_df, paste("./output/",samp,".umap.RDS",sep="")) ## OJE
     
     pred <- paste0("subclone_",clustersSub)
     names(pred) <- colnames(tum_cells)
@@ -610,12 +613,16 @@ plotTSNE <- function(raw_count_mtx, CNAmat , filt_genes, tum_cells, clustersSub,
     df <- data.frame(x = tsne$Y[,1],
                      y = tsne$Y[,2],
                      Subclones = pred)
-    saveRDS(df, "tsne.RData") ## OJE
+    saveRDS(df, paste("./output/",samp,".tsne.RDS",sep="")) ## OJE
     png(paste("./output/",samp,"tsne_CNA.png",sep=""), height=1650, width=1650, res=200)
-    
     pp <- ggplot(df, aes(x, y, colour = Subclones)) +
       geom_point() + theme_bw() + scale_color_brewer(palette="Paired")
-    
+    plot(pp)
+    dev.off()
+
+    pdf(paste("./output/",samp,"tsne_CNA.pdf",sep=""), 10, 10)
+    pp <- ggplot(df, aes(x, y, colour = Subclones)) +
+      geom_point() + theme_bw() + scale_color_brewer(palette="Paired")
     plot(pp)
     dev.off()
   }
