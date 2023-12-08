@@ -600,6 +600,9 @@ plotTSNE <- function(raw_count_mtx, CNAmat , filt_genes, tum_cells, clustersSub,
         rm(mtxplot)
       }
     )
+
+    umap_df <- umap::umap(mtxplot,n_components = 2, random_state = 15)
+    saveRDS(umap_df, "umap_df.Rds") ## OJE
     
     pred <- paste0("subclone_",clustersSub)
     names(pred) <- colnames(tum_cells)
